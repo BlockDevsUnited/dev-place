@@ -21,7 +21,7 @@
         onload: function() {
             toastr["info"]("Select a color with the 1 - 9 keys\r\nPress 0 to erase", "Instructions");
             setTimeout(function() {
-                toastr["info"]("Keep in mind, each pixel costs 1 devcash.", "Price: 1 Devcash");
+                toastr["info"]("Keep in mind, each pixel costs 5 devcash.", "Price: 5 Devcash");
             }, 4000);
             setTimeout(function() {
                 toastr["info"]("MAKE SURE YOU ARE CONNECTED TO GNOSIS CHAIN", "Important");
