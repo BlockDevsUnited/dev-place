@@ -24,11 +24,14 @@
                 toastr["info"]("Keep in mind, each pixel costs 1 devcash.", "Price: 1 Devcash");
             }, 4000);
             setTimeout(function() {
-                toastr["info"]("Press \"a\" to approve Devcash", "Approve Devcash");
+                toastr["info"]("MAKE SURE YOU ARE CONNECTED TO GNOSIS CHAIN", "Important");
             }, 8000);
             setTimeout(function() {
-                toastr["info"]("Most importantly, have fun! Full sourcecode is on GitHub.");
+                toastr["info"]("Press \"a\" to approve Devcash", "Approve Devcash");
             }, 12000);
+            setTimeout(function() {
+                toastr["info"]("Most importantly, have fun! Full sourcecode is on GitHub.");
+            }, 16000);
         }
     };
 
