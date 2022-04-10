@@ -14,20 +14,283 @@
         CANVAS_INITIAL_ZOOM: 20,
         CANVAS_MIN_ZOOM: 10,
         CANVAS_MAX_ZOOM: 40,
-        CANVAS_COLORS: ["#eeeeee", "red", "orange", "yellow", "green", "blue", "purple", "#614126", "white", "black"],
+        CANVAS_COLORS: ["#eeeeee", "#ff0000", "#ff8800", "#fff000", "#88ff00", "#000fff", "#8800ff", "#cc9933", "#3366cc", "#000000"],
         CANVAS_ELEMENT_ID: "pixelCanvas",
 
         // optional onload()
         onload: function() {
             toastr["info"]("Select a color with the 1 - 9 keys\r\nPress 0 to erase", "Instructions");
             setTimeout(function() {
-                toastr["info"]("Keep in mind, you have a 1 minute delay between each pixel you draw");
+                toastr["info"]("Keep in mind, each pixel costs 1 devcash.", "Price: 1 Devcash");
             }, 4000);
             setTimeout(function() {
-                toastr["info"]("Most importantly, have fun! Full sourcecode is on my GitHub.");
+                toastr["info"]("Press \"a\" to approve Devcash", "Approve Devcash");
             }, 8000);
+            setTimeout(function() {
+                toastr["info"]("Most importantly, have fun! Full sourcecode is on GitHub.");
+            }, 12000);
         }
     };
+
+    var Contract = {
+      provider: null,
+      DevcashContractAddress: "0x248E081e3C9e738D7C1ded5d471069dcf4Fd9B15",
+      DevcashContractABI: [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "approve",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "who",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "transfer",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "transferFrom",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+],
+      DevcashContract: null,
+      PlaceContractAddress: "0x313a4505762Fb7f5694ae6E405a9203DFcD36290",
+      PlaceContractABI: [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_devcash",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "newFee",
+				"type": "uint256"
+			}
+		],
+		"name": "feeChanged",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "x",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "y",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "colour",
+				"type": "string"
+			}
+		],
+		"name": "placed",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_fee",
+				"type": "uint256"
+			}
+		],
+		"name": "changeFee",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_owner",
+				"type": "address"
+			}
+		],
+		"name": "changeOwner",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_feeRecipient",
+				"type": "address"
+			}
+		],
+		"name": "changefeeRecipient",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "devcash",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "feeRecipient",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "x",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "y",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "colour",
+				"type": "string"
+			}
+		],
+		"name": "place",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+],
+      PlaceContract: null,
+      signer: null,
+    };
+    window.Contract = Contract;
     window.Pixel = Pixel;
 
     // toastr Notifications

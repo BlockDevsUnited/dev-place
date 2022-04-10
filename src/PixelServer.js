@@ -24,7 +24,7 @@ const CANVAS_WIDTH = process.env.CANVAS_WIDTH || 50;
 const CANVAS_HEIGHT = process.env.CANVAS_HEIGHT || 50;
 
 /* Minimum wait time between each draw request, per IP address (in seconds) */
-const USER_PAINT_LIMIT = process.env.USER_PAINT_LIMIT || 60;
+const USER_PAINT_LIMIT =  0;
 
 
 /*  !!!!! DONT EDIT ANYTHING AFTER THIS !!!!!  */

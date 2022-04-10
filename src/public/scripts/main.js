@@ -5,6 +5,7 @@
     var toastr = window.toastr;
 
     var Pixel = window.Pixel || {};
+    var Contract = window.Contract || {};
     var CANVAS_WIDTH = Pixel.CANVAS_WIDTH;
     var CANVAS_HEIGHT = Pixel.CANVAS_HEIGHT;
     var CANVAS_COLORS = Pixel.CANVAS_COLORS;
@@ -20,10 +21,12 @@
     for (var i = 0; i < CANVAS_WIDTH; i++)
         pixelMap[i] = Array(CANVAS_HEIGHT);
 
+
+
     var pixelRefreshData;
 
-    /* START PixelSocket CODE */
 
+    /* START PixelSocket CODE */
     var pixelSocket = new PixelSocket(Pixel.PIXEL_SERVER);
 
     pixelSocket.setCanvasRefreshHandler(function(pixelData) {
@@ -94,9 +97,15 @@
     }
 
     /* Disable pixel selector, update canvas, and send data to server */
-    function endDrawing(x, y) {
+    async function endDrawing(x, y) {
         if (x >= 0 && y >= 0 && x < CANVAS_WIDTH && y < CANVAS_HEIGHT) {
             console.log("Drawing to pixel", x, y, CANVAS_COLORS[selectedColorID]);
+
+            let tx = await Contract.PlaceContract.place(x,y,CANVAS_COLORS[selectedColorID])
+            console.log(tx)
+            await tx.wait()
+            console.log("done")
+
             pixelMap[x][y]["shape"].graphics.beginFill(CANVAS_COLORS[selectedColorID]).drawRect(x, y, 1, 1);
 
             // SEND PIXEL UPDATE TO SERVER!
@@ -108,6 +117,18 @@
     }
 
     $(document).ready(function() {
+
+      window.ethereum.enable();
+
+      Contract.provider = new ethers.providers.Web3Provider(web3.currentProvider);
+      Contract.provider.listAccounts().then(function(accounts) {
+        Contract.signer = Contract.provider.getSigner(accounts[0]);
+        Contract.PlaceContract = new ethers.Contract(Contract.PlaceContractAddress, Contract.PlaceContractABI, Contract.signer);
+        Contract.DevcashContract = new ethers.Contract(Contract.DevcashContractAddress, Contract.DevcashContractABI, Contract.signer);
+        console.log(Contract.signer)
+        console.log(Contract.PlaceContract)
+        console.log(Contract.DevcashContract)
+      })
 
         console.log("Initializing EaselJS Stage");
         stage = new createjs.Stage(Pixel.CANVAS_ELEMENT_ID);
@@ -149,6 +170,14 @@
             i += 1;             // ignore the first color in the CANVAS_COLORS array
             if ((i >= 0) && (i < CANVAS_COLORS.length))
                 startDrawing(i);
+
+            if(e.keyCode===65 || e.keyCode===97){
+              console.log("the 'a' key was pressed");
+              let amount = ethers.utils.parseUnits("10000",8)
+              Contract.DevcashContract.approve(Contract.PlaceContractAddress,amount).then(function(result){
+
+              })
+            }
         });
         /* User selects the pixel to paint (if selector is active) */
         stage.addEventListener("click", function(e) {
@@ -224,4 +253,5 @@
     Pixel.startDrawing = startDrawing;
     Pixel.endDrawing = endDrawing;
     window.Pixel = Pixel;
+    window.Contract = Contract;
 })(window);
