@@ -134,7 +134,7 @@
 	}
 ],
       DevcashContract: null,
-      PlaceContractAddress: "0x313a4505762Fb7f5694ae6E405a9203DFcD36290",
+      PlaceContractAddress: "0x57eF7aFeC35e3FB921B73ea7eC60caDB5981b198",
       PlaceContractABI: [
 	{
 		"inputs": [
